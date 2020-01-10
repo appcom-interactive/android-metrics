@@ -22,3 +22,5 @@ repo
 .settings/org.eclipse.buildship.core.prefs
 
 out/
+
+.jar
