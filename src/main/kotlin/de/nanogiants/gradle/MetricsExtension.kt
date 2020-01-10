@@ -7,3 +7,7 @@ package de.nanogiants.gradle
 import org.gradle.api.Project
 
 open class MetricsExtension constructor(val project: Project)
+
+internal fun Project.metrics(): MetricsExtension =
+  extensions.getByName(Constants.EXTENSION_NAME) as? MetricsExtension
+    ?: throw IllegalStateException("${Constants.EXTENSION_NAME} is not of the correct type")

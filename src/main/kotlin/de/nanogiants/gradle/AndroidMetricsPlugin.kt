@@ -11,8 +11,8 @@ class AndroidMetricsPlugin : Plugin<ProjectInternal> {
 
   override fun apply(target: ProjectInternal) {
     with(target) {
-      tasks.register("androidMetrics", MetricsTask::class.java)
-      extensions.create("metrics", MetricsExtension::class.java, target)
+      tasks.register(Constants.TASK_NAME, MetricsTask::class.java)
+      extensions.create(Constants.EXTENSION_NAME, MetricsExtension::class.java, target)
     }
   }
 }
