@@ -6,7 +6,10 @@ package de.nanogiants.gradle
 
 import org.gradle.api.Project
 
-open class MetricsExtension constructor(val project: Project)
+open class MetricsExtension {
+
+  var ignoreModules = emptyList<String>()
+}
 
 internal fun Project.metrics(): MetricsExtension =
   extensions.getByName(Constants.EXTENSION_NAME) as? MetricsExtension

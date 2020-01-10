@@ -13,7 +13,6 @@ import de.nanogiants.gradle.models.MetricSummary
 import de.nanogiants.gradle.models.TestMetric
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import java.io.File
 
 open class MetricsTask : DefaultTask() {
 
@@ -24,12 +23,11 @@ open class MetricsTask : DefaultTask() {
    * ktlint
    */
 
-  private val ignoreModules = listOf("base_style", "base")
-
   @TaskAction
   fun run() {
     println("aggregate metrics")
     val metricSummary = MetricSummary(mutableMapOf(), mutableMapOf())
+    val ignoreModules = project.extensions.getByType(MetricsExtension::class.java).ignoreModules
 
     println("Find metrics for:")
     project.subprojects.filterNot { it.name.contains("-test") || ignoreModules.contains(it.name) }.forEach {
@@ -70,7 +68,7 @@ open class MetricsTask : DefaultTask() {
 
     val gson = GsonBuilder().setPrettyPrinting().create()
     val jsonString: String = gson.toJson(metricSummary)
-    val file = File("${project.buildDir}/metric.json")
-    file.writeText(jsonString)
+
+    project.file("${project.buildDir}/metric.json").writeText(jsonString)
   }
 }

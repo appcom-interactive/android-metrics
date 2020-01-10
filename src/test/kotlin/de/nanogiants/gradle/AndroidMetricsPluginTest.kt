@@ -12,9 +12,7 @@ internal class AndroidMetricsPluginTest {
 
   @Test
   fun `apply plugin and verify availability`() {
-    val project = ProjectBuilder.builder().build()
-    project.pluginManager.apply("de.nanogiants.gradle.android-metrics")
-
+    val project = project()
     assertDoesNotThrow {
       project.plugins.getPlugin(AndroidMetricsPlugin::class.java)
     }
@@ -22,9 +20,7 @@ internal class AndroidMetricsPluginTest {
 
   @Test
   fun `apply plugin and get extensions`() {
-    val project = ProjectBuilder.builder().build()
-    project.pluginManager.apply("de.nanogiants.gradle.android-metrics")
-
+    val project = project()
     assertDoesNotThrow {
       project.metrics()
     }
@@ -32,9 +28,20 @@ internal class AndroidMetricsPluginTest {
 
   @Test
   fun `apply plugin and get single metrics task`() {
-    val project = ProjectBuilder.builder().build()
-    project.pluginManager.apply("de.nanogiants.gradle.android-metrics")
-
+    val project = project()
     assert(project.tasks.withType(MetricsTask::class.java).size == 1)
   }
+
+  @Test
+  fun `check extension ignore modules not empty`() {
+    val project = project()
+    project.extensions.getByType(MetricsExtension::class.java).ignoreModules = listOf("base", "base_style")
+
+    assert(project.metrics().ignoreModules.isNotEmpty())
+  }
+}
+
+private fun project() = ProjectBuilder.builder().build().also { project ->
+  //  project.pluginManager.apply("de.nanogiants.gradle.android-metrics")
+  project.pluginManager.apply(AndroidMetricsPlugin::class.java)
 }
