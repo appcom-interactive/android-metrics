@@ -22,6 +22,7 @@ class TestMetric(private val project: Project, private val isAndroidModule: Bool
   override fun file(): File = fileDirectory()
 
   override fun map(): TestOutEntity {
+    var testOutEntity = TestOutEntity(0, 0, 0, 0, 0.0)
     val testDirectory = if (isAndroidModule) {
       val testTask =
         project.tasks.filter { it.name.startsWith("test") && it.name.contains("DebugUnitTest") }.toTypedArray()
@@ -33,10 +34,6 @@ class TestMetric(private val project: Project, private val isAndroidModule: Bool
       File(file(), "test")
     }
 
-    println("map $testDirectory")
-
-    var testOutEntity = TestOutEntity(0, 0, 0, 0, 0.0)
-
     if (testDirectory.exists()) {
       val files = testDirectory.walkTopDown().filter {
         with(it.name) {
@@ -45,7 +42,6 @@ class TestMetric(private val project: Project, private val isAndroidModule: Bool
       }.toList()
 
       files.forEach {
-        println("read ${it.name}")
         val outEntity = TestMapper().toModel(it).run {
           TestOutEntity(
             tests = tests.toInt(),

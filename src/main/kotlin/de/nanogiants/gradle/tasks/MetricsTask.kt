@@ -51,7 +51,6 @@ open class MetricsTask : DefaultTask() {
       }.apply {
         forEach { metric ->
           metric.moduleDir = modulePath
-          println("map ${metric.file()} - ${metric.exists()}")
           if (metric.exists()) availableMetrics[metric.name()] = metric.map()
         }
       }
