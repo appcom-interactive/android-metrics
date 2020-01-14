@@ -27,7 +27,11 @@ open class MetricsTask : DefaultTask() {
 
   @TaskAction
   fun run() {
+    group = "other"
+    description = "Retrieve all metrics from project and extract to metric.json"
+
     println("aggregate metrics")
+
     val metricSummary = MetricSummary(mutableMapOf(), mutableMapOf())
     val ignoreModules = project.extensions.getByType(MetricsExtension::class.java).ignoreModules
 
@@ -47,6 +51,7 @@ open class MetricsTask : DefaultTask() {
       }.apply {
         forEach { metric ->
           metric.moduleDir = modulePath
+          println("map ${metric.file()} - ${metric.exists()}")
           if (metric.exists()) availableMetrics[metric.name()] = metric.map()
         }
       }
