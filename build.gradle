@@ -9,7 +9,7 @@ def projectGroup = 'de.nanogiants.gradle'
 def projectName = "android-metrics"
 def projectVersion = gitTag()
 
-def projectRepository = 'appcom-maven'
+def projectRepository = 'Maven'
 def projectDescription = "Retrieve all metrics from project and extract to metric.json"
 
 def projectURL = "https://github.com/appcom-interactive/android-metrics"
@@ -94,7 +94,7 @@ bintray {
     pkg {
         repo = projectRepository
         name = projectName
-        userOrg = 'appcom-interactive'
+        userOrg = user
         licenses = ['Apache-2.0']
         vcsUrl = projectGit
         version {
