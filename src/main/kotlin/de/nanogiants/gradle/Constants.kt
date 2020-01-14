@@ -4,6 +4,9 @@
  */
 package de.nanogiants.gradle
 
-import org.gradle.api.Project
+object Constants {
 
-open class MetricsExtension constructor(val project: Project)
+  const val EXTENSION_NAME = "metrics"
+
+  const val TASK_NAME = "androidMetrics"
+}

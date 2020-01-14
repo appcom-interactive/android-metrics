@@ -4,6 +4,8 @@
  */
 package de.nanogiants.gradle
 
+import de.nanogiants.gradle.extensions.MetricsExtension
+import de.nanogiants.gradle.tasks.MetricsTask
 import org.gradle.api.Plugin
 import org.gradle.api.internal.project.ProjectInternal
 
@@ -11,8 +13,8 @@ class AndroidMetricsPlugin : Plugin<ProjectInternal> {
 
   override fun apply(target: ProjectInternal) {
     with(target) {
-      tasks.register("androidMetrics", MetricsTask::class.java)
-      extensions.create("metrics", MetricsExtension::class.java, target)
+      tasks.register(Constants.TASK_NAME, MetricsTask::class.java)
+      extensions.create(Constants.EXTENSION_NAME, MetricsExtension::class.java)
     }
   }
 }

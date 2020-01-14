@@ -3,15 +3,18 @@
  * Copyright © 2019 appcom interactive GmbH. All rights reserved.
  */
 
-package de.nanogiants.gradle.models
+package de.nanogiants.gradle.models.metrics
 
 import de.nanogiants.gradle.entities.write.JacocoOutEntity
 import de.nanogiants.gradle.entities.write.ValueEntity
 import de.nanogiants.gradle.mappers.JacocoMapper
+import de.nanogiants.gradle.models.base.Metric
 import org.gradle.api.Project
 import java.io.File
 
-class JacocoMetric(val project: Project, val isAndroidModule: Boolean) : Metric(NAME, "/build/reports/jacoco") {
+class JacocoMetric(val project: Project, val isAndroidModule: Boolean) : Metric(
+  NAME, "/build/reports/jacoco"
+) {
 
   companion object {
 
@@ -26,9 +29,8 @@ class JacocoMetric(val project: Project, val isAndroidModule: Boolean) : Metric(
 
   override fun file(): File = fileDirectory()
 
-  fun map(): JacocoOutEntity {
+  override fun map(): JacocoOutEntity {
     val jacocoFile = if (isAndroidModule) {
-
       val testTask =
         project.tasks.filter { it.name.startsWith("test") && it.name.contains("DebugUnitTest") }.toTypedArray()
           .first()

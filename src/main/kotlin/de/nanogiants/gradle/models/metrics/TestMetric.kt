@@ -3,14 +3,16 @@
  * Copyright © 2020 appcom interactive GmbH. All rights reserved.
  */
 
-package de.nanogiants.gradle.models
+package de.nanogiants.gradle.models.metrics
 
 import de.nanogiants.gradle.entities.write.TestOutEntity
 import de.nanogiants.gradle.mappers.TestMapper
+import de.nanogiants.gradle.models.base.Metric
 import org.gradle.api.Project
 import java.io.File
 
-class TestMetric(val project: Project, private val isAndroidModule: Boolean) : Metric(NAME, "/build/test-results") {
+class TestMetric(private val project: Project, private val isAndroidModule: Boolean) :
+  Metric(NAME, "/build/test-results") {
 
   companion object {
 
@@ -19,18 +21,18 @@ class TestMetric(val project: Project, private val isAndroidModule: Boolean) : M
 
   override fun file(): File = fileDirectory()
 
-  fun map(): TestOutEntity {
+  override fun map(): TestOutEntity {
+    var testOutEntity = TestOutEntity(0, 0, 0, 0, 0.0)
     val testDirectory = if (isAndroidModule) {
       val testTask =
         project.tasks.filter { it.name.startsWith("test") && it.name.contains("DebugUnitTest") }.toTypedArray()
-          .first()
-      val name = testTask.name
-      File(file(), name)
+          .first {
+            File(file(), it.name).exists()
+          }
+      File(file(), testTask.name)
     } else {
       File(file(), "test")
     }
-
-    var testOutEntity = TestOutEntity(0, 0, 0, 0, 0.0)
 
     if (testDirectory.exists()) {
       val files = testDirectory.walkTopDown().filter {

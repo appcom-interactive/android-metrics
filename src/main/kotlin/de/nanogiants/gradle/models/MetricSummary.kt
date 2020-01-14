@@ -6,6 +6,9 @@
 package de.nanogiants.gradle.models
 
 import de.nanogiants.gradle.entities.write.*
+import de.nanogiants.gradle.models.metrics.DexCountMetric
+import de.nanogiants.gradle.models.metrics.JacocoMetric
+import de.nanogiants.gradle.models.metrics.TestMetric
 
 data class MetricSummary(
   val data: MutableMap<String, Map<String, MetricEntity>>,
