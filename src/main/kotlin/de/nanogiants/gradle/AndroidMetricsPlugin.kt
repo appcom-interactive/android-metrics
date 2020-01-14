@@ -4,6 +4,8 @@
  */
 package de.nanogiants.gradle
 
+import de.nanogiants.gradle.extensions.MetricsExtension
+import de.nanogiants.gradle.tasks.MetricsTask
 import org.gradle.api.Plugin
 import org.gradle.api.internal.project.ProjectInternal
 

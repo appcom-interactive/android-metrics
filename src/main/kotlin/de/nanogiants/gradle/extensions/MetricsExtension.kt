@@ -2,8 +2,9 @@
  * Created by appcom interactive GmbH on 10.01.20.
  * Copyright © 2020 appcom interactive GmbH. All rights reserved.
  */
-package de.nanogiants.gradle
+package de.nanogiants.gradle.extensions
 
+import de.nanogiants.gradle.Constants
 import org.gradle.api.Project
 
 open class MetricsExtension {

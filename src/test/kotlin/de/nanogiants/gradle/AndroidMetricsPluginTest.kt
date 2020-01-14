@@ -4,7 +4,9 @@
  */
 package de.nanogiants.gradle
 
-import org.gradle.testfixtures.ProjectBuilder
+import de.nanogiants.gradle.extensions.MetricsExtension
+import de.nanogiants.gradle.extensions.metrics
+import de.nanogiants.gradle.tasks.MetricsTask
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 
@@ -39,9 +41,4 @@ internal class AndroidMetricsPluginTest {
 
     assert(project.metrics().ignoreModules.isNotEmpty())
   }
-}
-
-private fun project() = ProjectBuilder.builder().build().also { project ->
-  //  project.pluginManager.apply("de.nanogiants.gradle.android-metrics")
-  project.pluginManager.apply(AndroidMetricsPlugin::class.java)
 }

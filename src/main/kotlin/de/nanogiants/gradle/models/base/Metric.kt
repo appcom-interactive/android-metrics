@@ -3,8 +3,9 @@
  * Copyright © 2019 appcom interactive GmbH. All rights reserved.
  */
 
-package de.nanogiants.gradle.models
+package de.nanogiants.gradle.models.base
 
+import de.nanogiants.gradle.entities.write.MetricEntity
 import java.io.File
 
 abstract class Metric(val key: String, val path: String) {
@@ -15,7 +16,9 @@ abstract class Metric(val key: String, val path: String) {
 
   fun exists(): Boolean = fileDirectory().isDirectory
 
+  fun name() = key
+
   abstract fun file(): File
 
-  fun name() = key
+  abstract fun map(): MetricEntity
 }
