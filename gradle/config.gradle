@@ -1,0 +1,21 @@
+ext {
+    projectGroup = 'de.nanogiants.gradle'
+    projectName = "android-metrics"
+    projectVersion = gitTag()
+
+    projectRepository = 'Maven'
+    projectDescription = "Retrieve all metrics from project and extract to metric.json"
+
+    projectURL = "https://github.com/appcom-interactive/android-metrics"
+    projectGit = "https://github.com/appcom-interactive/android-metrics.git"
+}
+
+def gitTag() {
+    def revlist = 'git rev-list --tags --max-count=1'.execute([], project.rootDir).text.trim()
+    def versionName = ('git describe --tags ' + revlist.toString()).execute([], project.rootDir).text.trim()
+    if (versionName != null) {
+        return versionName
+    } else {
+        return "NO_VERSION"
+    }
+}

@@ -5,24 +5,35 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-def projectGroup = 'de.nanogiants.gradle'
-def projectName = "android-metrics"
-def projectVersion = gitTag()
-
-def projectRepository = 'Maven'
-def projectDescription = "Retrieve all metrics from project and extract to metric.json"
-
-def projectURL = "https://github.com/appcom-interactive/android-metrics"
-def projectGit = "https://github.com/appcom-interactive/android-metrics.git"
+apply from: 'gradle/config.gradle'
 
 group projectGroup
 version projectVersion
 
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events = ['passed', 'skipped', 'failed']
+    }
+
+    reports {
+        junitXml.enabled = true
+        html.enabled = true
+    }
+}
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-repositories {
-    mavenCentral()
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
@@ -44,73 +55,5 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
 }
 
-jacoco {
-    toolVersion = "0.8.5"
-}
-
-jacocoTestReport {
-    reports {
-        html.enabled true
-        xml.enabled true
-        csv.enabled false
-    }
-}
-
-test {
-    useJUnitPlatform()
-
-    testLogging {
-        events = ['passed', 'skipped', 'failed']
-    }
-
-    reports {
-        junitXml.enabled = true
-        html.enabled = true
-    }
-}
-
-task sourcesJar(type: Jar) {
-    archiveClassifier.set("sources")
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = projectGroup
-            artifactId = projectName
-            version = projectVersion
-
-            from components.java
-        }
-    }
-}
-
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
-    configurations = ['archives']
-    publications = ['Publication']
-    publish = true
-    pkg {
-        repo = projectRepository
-        name = projectName
-        userOrg = user
-        licenses = ['Apache-2.0']
-        vcsUrl = projectGit
-        version {
-            name = projectVersion
-            desc = projectDescription
-            vcsTag = projectVersion
-        }
-    }
-}
-
-def gitTag() {
-    def revlist = 'git rev-list --tags --max-count=1'.execute([], project.rootDir).text.trim()
-    def versionName = ('git describe --tags ' + revlist.toString()).execute([], project.rootDir).text.trim()
-    if (versionName != null) {
-        return versionName
-    } else {
-        return "NO_VERSION"
-    }
-}
+apply from: 'gradle/jacoco.gradle'
+apply from: 'gradle/deploy.gradle'
