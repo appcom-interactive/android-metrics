@@ -32,7 +32,7 @@ internal class MetricsTaskTest {
 
     val result = GradleRunner.create()
       .withProjectDir(projectDir.toFile())
-      .withPluginClasspath()
+//      .withPluginClasspath()
       .withArguments("metricsTest", "--info", "--stacktrace")
       .build()
 

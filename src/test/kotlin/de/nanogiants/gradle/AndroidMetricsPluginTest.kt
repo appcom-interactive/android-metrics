@@ -40,5 +40,7 @@ internal class AndroidMetricsPluginTest {
     project.extensions.getByType(MetricsExtension::class.java).ignoreModules = listOf("base", "base_style")
 
     assert(project.metrics().ignoreModules.isNotEmpty())
+    assert(project.metrics().ignoreModules.contains("base"))
+    assert(project.metrics().ignoreModules.contains("base_style"))
   }
 }
