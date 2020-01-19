@@ -3,12 +3,13 @@
  * Copyright © 2020 appcom interactive GmbH. All rights reserved.
  */
 
-package de.nanogiants.gradle.models.metrics
+package de.nanogiants.gradle.metrics
 
+import de.nanogiants.gradle.base.Metric
 import de.nanogiants.gradle.entities.write.TestOutEntity
 import de.nanogiants.gradle.mappers.TestMapper
-import de.nanogiants.gradle.models.base.Metric
 import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
 import java.io.File
 
 class TestMetric(private val project: Project, private val isAndroidModule: Boolean) :
@@ -25,10 +26,7 @@ class TestMetric(private val project: Project, private val isAndroidModule: Bool
     var testOutEntity = TestOutEntity(0, 0, 0, 0, 0.0)
     val testDirectory = if (isAndroidModule) {
       val testTask =
-        project.tasks.filter { it.name.startsWith("test") && it.name.contains("DebugUnitTest") }.toTypedArray()
-          .first {
-            File(file(), it.name).exists()
-          }
+        project.tasks.filterIsInstance(Test::class.java).toTypedArray().first { File(file(), it.name).exists() }
       File(file(), testTask.name)
     } else {
       File(file(), "test")

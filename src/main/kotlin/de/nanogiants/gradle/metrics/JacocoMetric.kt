@@ -3,12 +3,12 @@
  * Copyright © 2019 appcom interactive GmbH. All rights reserved.
  */
 
-package de.nanogiants.gradle.models.metrics
+package de.nanogiants.gradle.metrics
 
+import de.nanogiants.gradle.base.Metric
 import de.nanogiants.gradle.entities.write.JacocoOutEntity
 import de.nanogiants.gradle.entities.write.ValueEntity
 import de.nanogiants.gradle.mappers.JacocoMapper
-import de.nanogiants.gradle.models.base.Metric
 import org.gradle.api.Project
 import java.io.File
 

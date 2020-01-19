@@ -5,14 +5,16 @@
 
 package de.nanogiants.gradle.tasks
 
-import com.google.gson.GsonBuilder
+import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.LibraryPlugin
+import de.nanogiants.gradle.Module
 import de.nanogiants.gradle.entities.write.MetricEntity
 import de.nanogiants.gradle.extensions.MetricsExtension
-import de.nanogiants.gradle.models.MetricSummary
-import de.nanogiants.gradle.models.metrics.AndroidTestMetric
-import de.nanogiants.gradle.models.metrics.DexCountMetric
-import de.nanogiants.gradle.models.metrics.JacocoMetric
-import de.nanogiants.gradle.models.metrics.TestMetric
+import de.nanogiants.gradle.metrics.AndroidTestMetric
+import de.nanogiants.gradle.metrics.DexCountMetric
+import de.nanogiants.gradle.metrics.JacocoMetric
+import de.nanogiants.gradle.metrics.MetricSummary
+import de.nanogiants.gradle.metrics.TestMetric
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -27,41 +29,41 @@ open class MetricsTask : DefaultTask() {
 
   @TaskAction
   fun run() {
-    group = "other"
+    group = "help"
     description = "Retrieve all metrics from project and extract to metric.json"
-
-    println("aggregate metrics")
 
     val metricSummary = MetricSummary(mutableMapOf(), mutableMapOf())
     val ignoreModules = project.extensions.getByType(MetricsExtension::class.java).ignoreModules
 
     println("Find metrics for:")
     project.subprojects.filterNot { it.name.contains("-test") || ignoreModules.contains(it.name) }.forEach {
+      val availableMetrics = mutableMapOf<String, MetricEntity>()
       val modulePath = it.projectDir.path
       val moduleName = it.name
-      val isAndroidModule = it.hasProperty("android")
-      val availableMetrics = mutableMapOf<String, MetricEntity>()
+      val moduleType = with(it.plugins) {
+        when {
+          hasPlugin(AppPlugin::class.java) -> Module.APP
+          hasPlugin(LibraryPlugin::class.java) -> Module.LIBRARY
+          else -> Module.KOTLIN
+        }
+      }
 
       println("- $moduleName")
 
-      if (isAndroidModule) {
-        listOf(DexCountMetric(), JacocoMetric(it, true), TestMetric(it, true), AndroidTestMetric())
-      } else {
-        listOf(JacocoMetric(it, false), TestMetric(it, false))
-      }.apply {
-        forEach { metric ->
-          metric.moduleDir = modulePath
-          if (metric.exists()) availableMetrics[metric.name()] = metric.map()
-        }
+      val metricList = when (moduleType) {
+        Module.APP -> listOf(DexCountMetric(it), JacocoMetric(it, true), TestMetric(it, true), AndroidTestMetric())
+        Module.LIBRARY -> listOf(JacocoMetric(it, true), TestMetric(it, true), AndroidTestMetric())
+        Module.KOTLIN -> listOf(JacocoMetric(it, false), TestMetric(it, false))
+      }
+
+      metricList.forEach { metric ->
+        metric.moduleDir = modulePath
+        if (metric.exists()) availableMetrics[metric.name()] = metric.map()
       }
 
       metricSummary.data[moduleName] = availableMetrics
     }
 
-    metricSummary.generateProjectData()
-
-    val gson = GsonBuilder().setPrettyPrinting().create()
-    val jsonString: String = gson.toJson(metricSummary)
-    project.file("${project.buildDir}/metric.json").writeText(jsonString)
+    metricSummary.writeFile(project)
   }
 }
