@@ -1,7 +1,7 @@
 ext {
     projectGroup = 'de.nanogiants.gradle'
     projectName = "android-metrics"
-    projectVersion = gitTag()
+    projectVersion = hasProperty("VERSION_NAME") ? VERSION_NAME : gitTag()
 
     projectRepository = 'Maven'
     projectDescription = "Retrieve all metrics from project and extract to metric.json"
