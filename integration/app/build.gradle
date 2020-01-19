@@ -8,62 +8,76 @@ apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'jacoco-android'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
-    defaultConfig {
-        applicationId "de.nanogiants.metrics.test"
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  compileSdkVersion 29
+  buildToolsVersion "29.0.2"
+  defaultConfig {
+    applicationId "de.nanogiants.metrics.test"
+    minSdkVersion 21
+    targetSdkVersion 29
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+  buildTypes {
+    release {
+      minifyEnabled true
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+  }
+  flavorDimensions "stage", "store"
+  productFlavors {
+    develop {
+      dimension "stage"
     }
-    flavorDimensions "stage", "store"
-    productFlavors {
-        develop {
-            dimension "stage"
-        }
-        staging {
-            dimension "stage"
-        }
-        production {
-            dimension "stage"
-        }
-        appcenter {
-            dimension "store"
-        }
-        playstore {
-            dimension "store"
-        }
+    staging {
+      dimension "stage"
     }
+    production {
+      dimension "stage"
+    }
+    appcenter {
+      dimension "store"
+    }
+    playstore {
+      dimension "store"
+    }
+  }
 
-    // ignore specific variants
-    variantFilter { variant ->
-        def ignored = variant.name in [
-            'developPlaystoreDebug',
-            'developPlaystoreRelease',
-            'stagingPlaystoreDebug',
-            'stagingPlaystoreRelease']
-        variant.ignore = ignored
-    }
+  // ignore specific variants
+  variantFilter { variant ->
+    def ignored = variant.name in [
+        'developPlaystoreDebug',
+        'developPlaystoreRelease',
+        'stagingPlaystoreDebug',
+        'stagingPlaystoreRelease']
+    variant.ignore = ignored
+  }
+}
+
+jacoco {
+  toolVersion = "0.8.5"
+}
+
+tasks.withType(Test) {
+  jacoco.includeNoLocationClasses = true
+}
+
+jacocoAndroidUnitTestReport {
+  csv.enabled false
+  html.enabled true
+  xml.enabled true
 }
 
 dexcount {
-    format = "json"
+  format = "json"
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+  implementation project(":data")
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  implementation 'androidx.appcompat:appcompat:1.1.0'
+  implementation 'androidx.core:core-ktx:1.1.0'
+  testImplementation 'junit:junit:4.13'
+  androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+  androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

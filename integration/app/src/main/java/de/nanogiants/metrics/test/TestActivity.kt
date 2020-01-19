@@ -7,6 +7,8 @@ package de.nanogiants.metrics.test
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import de.nanogiants.metrics.data.TestLogic
+import de.nanogiants.metrics.data.TestModel
 
 class TestActivity : AppCompatActivity() {
 
@@ -16,6 +18,12 @@ class TestActivity : AppCompatActivity() {
     setContentView(R.layout.activity_test)
 
     doSomething()
+
+    val model = TestModel("test", 1)
+    val computedModel = TestLogic().computeModel(model)
+
+    println(model)
+    println(computedModel)
   }
 
   private fun doSomething() {
