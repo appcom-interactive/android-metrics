@@ -12,20 +12,11 @@ apply from: 'gradle/config.gradle'
 
 group projectGroup
 version VERSION_NAME
-//version projectVersion
 
 repositories {
     mavenCentral()
     jcenter()
     google()
-}
-
-allprojects {
-    task hello {
-        doLast { task ->
-            println "I'm $task.project.name"
-        }
-    }
 }
 
 test {
