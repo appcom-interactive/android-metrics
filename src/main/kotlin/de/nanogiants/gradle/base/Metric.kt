@@ -3,7 +3,7 @@
  * Copyright © 2019 appcom interactive GmbH. All rights reserved.
  */
 
-package de.nanogiants.gradle.models.base
+package de.nanogiants.gradle.base
 
 import de.nanogiants.gradle.entities.write.MetricEntity
 import java.io.File

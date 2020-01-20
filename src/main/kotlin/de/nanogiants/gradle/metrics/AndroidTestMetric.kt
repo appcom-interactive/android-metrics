@@ -2,11 +2,11 @@
  * Created by appcom interactive GmbH on 14.01.20.
  * Copyright © 2020 appcom interactive GmbH. All rights reserved.
  */
-package de.nanogiants.gradle.models.metrics
+package de.nanogiants.gradle.metrics
 
+import de.nanogiants.gradle.base.Metric
 import de.nanogiants.gradle.entities.write.TestOutEntity
 import de.nanogiants.gradle.mappers.TestMapper
-import de.nanogiants.gradle.models.base.Metric
 import java.io.File
 
 class AndroidTestMetric : Metric(NAME, "/build/outputs/androidTest-results/connected/flavors") {

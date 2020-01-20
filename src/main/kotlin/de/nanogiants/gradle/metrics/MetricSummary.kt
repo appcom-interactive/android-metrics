@@ -3,12 +3,15 @@
  * Copyright © 2019 appcom interactive GmbH. All rights reserved.
  */
 
-package de.nanogiants.gradle.models
+package de.nanogiants.gradle.metrics
 
-import de.nanogiants.gradle.entities.write.*
-import de.nanogiants.gradle.models.metrics.DexCountMetric
-import de.nanogiants.gradle.models.metrics.JacocoMetric
-import de.nanogiants.gradle.models.metrics.TestMetric
+import com.google.gson.GsonBuilder
+import de.nanogiants.gradle.entities.write.DexCountOutEntity
+import de.nanogiants.gradle.entities.write.JacocoOutEntity
+import de.nanogiants.gradle.entities.write.MetricEntity
+import de.nanogiants.gradle.entities.write.TestOutEntity
+import de.nanogiants.gradle.entities.write.ValueEntity
+import org.gradle.api.Project
 
 data class MetricSummary(
   val data: MutableMap<String, Map<String, MetricEntity>>,
@@ -41,5 +44,12 @@ data class MetricSummary(
     project[JacocoMetric.NAME] = JacocoOutEntity("all", jacocoInstruction, jacocoBranch)
     project[DexCountMetric.NAME] = dexCountEntity
     project[TestMetric.NAME] = testOutEntity
+  }
+
+  fun writeFile(project: Project) {
+    generateProjectData()
+    val gson = GsonBuilder().setPrettyPrinting().create()
+    val jsonString: String = gson.toJson(this)
+    project.file("${project.buildDir}/metric.json").writeText(jsonString)
   }
 }
