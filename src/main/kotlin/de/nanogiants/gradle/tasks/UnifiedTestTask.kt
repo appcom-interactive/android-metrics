@@ -16,7 +16,8 @@ open class UnifiedTestTask : DefaultTask() {
 
   @TaskAction
   fun run() {
-    group = "Verification"
-    println("unified test successful")
+    doLast {
+      println("unified test successful")
+    }
   }
 }
