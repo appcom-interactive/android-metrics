@@ -24,3 +24,5 @@ repo
 out/
 
 .jar
+
+.gradletasknamecache

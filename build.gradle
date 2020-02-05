@@ -50,7 +50,6 @@ dependencies {
   implementation("com.google.code.gson:gson:2.8.6")
   implementation("org.simpleframework:simple-xml:2.7.1")
 
-//    implementation 'com.squareup.moshi:moshi-kotlin:1.9.2'
 //    implementation 'com.tickaroo.tikxml:annotation:0.8.15'
 //    implementation 'com.tickaroo.tikxml:core:0.8.15'
 //    kapt 'com.tickaroo.tikxml:processor:0.8.15'
