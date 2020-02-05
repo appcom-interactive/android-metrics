@@ -16,8 +16,6 @@ open class UnifiedTestTask : DefaultTask() {
 
   @TaskAction
   fun run() {
-    doLast {
-      println("unified test successful")
-    }
+    println("unified test successful")
   }
 }

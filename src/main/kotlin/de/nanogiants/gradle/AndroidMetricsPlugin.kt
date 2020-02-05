@@ -22,12 +22,12 @@ class AndroidMetricsPlugin : Plugin<ProjectInternal> {
 
   override fun apply(target: ProjectInternal) {
     with(target) {
-      tasks.register(Constants.TASK_NAME, MetricsTask::class.java)
+      tasks.register(MetricsTask.NAME, MetricsTask::class.java)
       tasks.register(UnifiedTestTask.NAME, UnifiedTestTask::class.java) {
         it.group = "verification"
         it.description = "Unify test task"
       }
-      extensions.create(Constants.EXTENSION_NAME, MetricsExtension::class.java)
+      extensions.create(MetricsExtension.NAME, MetricsExtension::class.java)
 
       subprojects { child ->
         applyUnifiedPlugin(child)

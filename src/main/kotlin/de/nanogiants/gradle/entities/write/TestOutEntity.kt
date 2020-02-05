@@ -6,13 +6,12 @@
 package de.nanogiants.gradle.entities.write
 
 class TestOutEntity(
-  private val tests: Int,
+  val tests: Int,
   private val skipped: Int,
   private val failed: Int,
   private val errors: Int,
   private val durationInSeconds: Double
-) :
-  MetricEntity() {
+) : MetricEntity() {
 
   operator fun plus(entity: TestOutEntity): TestOutEntity = TestOutEntity(
     tests + entity.tests,

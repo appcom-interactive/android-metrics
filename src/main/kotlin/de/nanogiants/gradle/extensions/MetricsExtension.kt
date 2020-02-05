@@ -4,14 +4,19 @@
  */
 package de.nanogiants.gradle.extensions
 
-import de.nanogiants.gradle.Constants
 import org.gradle.api.Project
 
 open class MetricsExtension {
 
+  companion object {
+
+    const val NAME = "metrics"
+  }
+
   var ignoreModules = emptyList<String>()
+  var groupModules = emptyList<String>()
 }
 
 internal fun Project.metrics(): MetricsExtension =
-  extensions.getByName(Constants.EXTENSION_NAME) as? MetricsExtension
-    ?: throw IllegalStateException("${Constants.EXTENSION_NAME} is not of the correct type")
+  extensions.getByName(MetricsExtension.NAME) as? MetricsExtension
+    ?: throw IllegalStateException("${MetricsExtension.NAME} is not of the correct type")
