@@ -20,6 +20,11 @@ import org.gradle.api.tasks.TaskAction
 
 open class MetricsTask : DefaultTask() {
 
+  companion object {
+
+    const val NAME = "androidMetrics"
+  }
+
   /**
    * TODO: 2020-01-10 missing metrics
    * dependenciesUpdates
@@ -32,7 +37,7 @@ open class MetricsTask : DefaultTask() {
     group = "help"
     description = "Retrieve all metrics from project and extract to metric.json"
 
-    val metricSummary = MetricSummary(mutableMapOf(), mutableMapOf())
+    val metricSummary = MetricSummary()
     val ignoreModules = project.extensions.getByType(MetricsExtension::class.java).ignoreModules
 
     println("Find metrics for:")
