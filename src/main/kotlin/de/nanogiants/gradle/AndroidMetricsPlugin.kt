@@ -44,16 +44,35 @@ class AndroidMetricsPlugin : Plugin<ProjectInternal> {
     }
     childProject.afterEvaluate { after ->
       val unifyTask = after.tasks.named(UnifiedTestTask.NAME)
-      val dependsOnName = with(after.plugins) {
+      with(after.plugins) {
         when {
-          hasPlugin(AppPlugin::class.java) -> after.unify().taskName
-          hasPlugin(LibraryPlugin::class.java) -> after.unify().taskName
-          else -> "test"
-        }
-      }
-      unifyTask.configure {
-        if (dependsOnName.isNotEmpty()) {
-          it.dependsOn(dependsOnName)
+          hasPlugin(AppPlugin::class.java) || hasPlugin(LibraryPlugin::class.java) -> {
+            val dependsOnName = after.unify().taskName
+            val jacocoDependsOn = after.tasks.findByName("jacoco${dependsOnName.capitalize()}Report")
+
+            unifyTask.configure {
+              if (dependsOnName.isNotEmpty()) {
+                if (jacocoDependsOn != null) {
+                  it.dependsOn(jacocoDependsOn)
+                } else {
+                  it.dependsOn(dependsOnName)
+                }
+              }
+            }
+          }
+          else -> {
+            val dependsOnName = "test"
+            val jacocoTask = after.tasks.withType(JacocoReport::class.java).firstOrNull()
+
+            unifyTask.configure {
+              if (dependsOnName.isNotEmpty()) {
+                it.dependsOn(dependsOnName)
+                jacocoTask?.let { task ->
+                  it.finalizedBy(task)
+                }
+              }
+            }
+          }
         }
       }
     }
