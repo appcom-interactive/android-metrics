@@ -8,6 +8,7 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import de.nanogiants.gradle.extensions.MetricsExtension
 import de.nanogiants.gradle.extensions.UnifyExtension
+import de.nanogiants.gradle.extensions.metrics
 import de.nanogiants.gradle.extensions.unify
 import de.nanogiants.gradle.tasks.MetricsTask
 import de.nanogiants.gradle.tasks.UnifiedTestTask
@@ -30,39 +31,42 @@ class AndroidMetricsPlugin : Plugin<ProjectInternal> {
       extensions.create(MetricsExtension.NAME, MetricsExtension::class.java)
 
       subprojects { child ->
-        applyUnifiedPlugin(child)
-        addShowCoverageTask(child)
+        child.extensions.create(UnifyExtension.NAME, UnifyExtension::class.java)
+        child.tasks.register(UnifiedTestTask.NAME, UnifiedTestTask::class.java) {
+          it.group = "verification"
+          it.description = "Unify test task"
+        }
+        child.afterEvaluate {
+          if (!target.metrics().ignoreModules.contains(it.name) && !it.name.contains("-test")) {
+            applyUnifiedPlugin(it)
+            addShowCoverageTask(it)
+          } else {
+            println("ignore ${it.name}")
+          }
+        }
       }
     }
   }
 
   internal fun applyUnifiedPlugin(childProject: Project) {
-    childProject.extensions.create(UnifyExtension.NAME, UnifyExtension::class.java)
-    childProject.tasks.register(UnifiedTestTask.NAME, UnifiedTestTask::class.java) {
-      it.group = "verification"
-      it.description = "Unify test task"
-    }
+    val dependsOnName = childProject.unify().taskName
+    val unifyTask = childProject.tasks.named(UnifiedTestTask.NAME)
 
-    childProject.afterEvaluate { after ->
-      val dependsOnName = after.unify().taskName
-      val unifyTask = after.tasks.named(UnifiedTestTask.NAME)
-
-      with(after.plugins) {
-        when {
-          hasPlugin(AppPlugin::class.java) || hasPlugin(LibraryPlugin::class.java) -> {
-            unifyTask.configure {
-              if (dependsOnName.isNotEmpty()) {
-                it.dependsOn(dependsOnName)
-              }
+    with(childProject.plugins) {
+      when {
+        hasPlugin(AppPlugin::class.java) || hasPlugin(LibraryPlugin::class.java) -> {
+          unifyTask.configure {
+            if (dependsOnName.isNotEmpty()) {
+              it.dependsOn(dependsOnName)
             }
           }
-          else -> {
-            val jacocoTask = after.tasks.withType(JacocoReport::class.java).firstOrNull()
-            unifyTask.configure {
-              it.dependsOn("test")
-              jacocoTask?.let { task ->
-                it.finalizedBy(task)
-              }
+        }
+        else -> {
+          val jacocoTask = childProject.tasks.withType(JacocoReport::class.java).firstOrNull()
+          unifyTask.configure {
+            it.dependsOn("test")
+            jacocoTask?.let { task ->
+              it.finalizedBy(task)
             }
           }
         }
