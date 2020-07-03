@@ -16,7 +16,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'de.nanogiants.gradle:android-metrics:0.2.1'
+    classpath 'de.nanogiants.gradle:android-metrics:0.2.2'
   }
 }
 ```
