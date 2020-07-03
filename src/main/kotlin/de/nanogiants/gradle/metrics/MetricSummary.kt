@@ -90,6 +90,8 @@ data class MetricSummary(
     summarizeModules(project)
     val gson = GsonBuilder().setPrettyPrinting().create()
     val jsonString: String = gson.toJson(this)
+    project.buildDir.mkdir()
+    outputFile.createNewFile()
     outputFile.writeText(jsonString)
   }
 }
