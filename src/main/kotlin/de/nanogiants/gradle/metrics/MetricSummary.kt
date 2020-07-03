@@ -14,6 +14,7 @@ import de.nanogiants.gradle.entities.write.ValueEntity
 import de.nanogiants.gradle.extensions.metrics
 import de.nanogiants.gradle.utils.GitUtils
 import org.gradle.api.Project
+import java.io.File
 
 data class MetricSummary(
   val data: MutableMap<String, Map<String, MetricEntity>> = mutableMapOf(),
@@ -84,10 +85,13 @@ data class MetricSummary(
   }
 
   fun writeFile(project: Project) {
+    val outputFile = File(project.buildDir.absolutePath, "metric.json")
     generateProjectData()
     summarizeModules(project)
     val gson = GsonBuilder().setPrettyPrinting().create()
     val jsonString: String = gson.toJson(this)
-    project.file("${project.buildDir}/metric.json").writeText(jsonString)
+    project.buildDir.mkdir()
+    outputFile.createNewFile()
+    outputFile.writeText(jsonString)
   }
 }
